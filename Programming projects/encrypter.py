@@ -9,62 +9,70 @@ file to reconstruct the original order.
 '''
 import random
 
-def encrypt_file(filename):
-    '''
-    Reads a file, shuffles its lines, 
-    and saves the result and key.
+
+import random
+
+def encrypt_file(file_name):
+    """
+    Encrypt a text file.
     Args:
-    filename: The name of the file to encrypt.
+    file_name: The inputted text file.
     Returns:
-    None.
-    '''
-    # open the file 
-    f = open(filename, 'r')
-    rlines = f.readlines()
+    None: Output goes to encrypted.txt and index.txt.
+    """
+
+    # Read the lines from the inputted file. 
+    lines = []
+    f = open(file_name, 'r')
+    for line in f:
+        line = line.rstrip('\n')
+        lines.append(line)
     f.close()
 
-    linesl = []
-    for line in linesl:
-        if len(line) > 0 and line[-1] == '\n':
-            linesl.append(line[:-1])
-        else:
-            linesl.append(line)
-    
-    # create a list line numbers
-    line_indices = []
-    count = len(linesl)
-    
-    for i in range(count):
-        line_indices.append(i + 1)
-        
+    # Create the indexes. 
+    original_indexes = []
+    i = 0
+    while i < len(lines):
+        original_indexes.append(i)
+        i += 1
+
+    # The given seed for test cases.
     random.seed(125)
-    
-    # swap lines 
-    swaps = count * 5
-    for i in range(swaps):
-        # pick two random indexes
-        idx1 = random.randint(0, count - 1)
-        idx2 = random.randint(0, count - 1)
-        
-        # swap the text lines
-        temp_line = linesl[idx1]
-        linesl[idx1] = linesl[idx2]
-        linesl[idx2] = temp_line
-        
-        # swap the corresponding line numbers
-        temp_index = line_indices[idx1]
-        line_indices[idx1] = line_indices[idx2]
-        line_indices[idx2] = temp_index
-        
-    # write the encrypted lines to a new file
+
+    # Encrypt the lines and indexes. 
+    line_count = len(lines)
+    i = 0
+    while i < line_count * 5:
+        a = random.randint(0, line_count - 1)
+        b = random.randint(0, line_count - 1)
+        temp_line = lines[a]
+        lines[a] = lines[b]
+        lines[b] = temp_line
+
+        temp_index = original_indexes[a]
+        original_indexes[a] = original_indexes[b]
+        original_indexes[b] = temp_index
+        i += 1
+
+    # Write and export the text to a text file. 
     f = open("encrypted.txt", "w")
-    for i in range(count):
-        f.write(linesl[i])
-        if i < count - 1:
-            f.write("\n")
+    i = 0
+    while i < line_count:
+        if i < line_count - 1:
+            f.write(lines[i] + "\n")
+        else:
+            f.write(lines[i])
+        i += 1
     f.close()
-    
+
+    # Write and export the indexes to an index key file. 
     f = open("index.txt", "w")
-    for idx in line_indices:
-        f.write(str(idx) + "\n")
+    i = 0
+    while i < line_count:
+        number_to_write = original_indexes[i] + 1
+        if i < line_count - 1:
+            f.write(str(number_to_write) + "\n")
+        else:
+            f.write(str(number_to_write))
+        i += 1
     f.close()
